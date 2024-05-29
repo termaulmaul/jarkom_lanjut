@@ -1,0 +1,87 @@
+- name: Dynamic Routing
+  hosts: routers
+  tasks:
+    - name: Set Router Identity
+      community.network.routeros_command:
+        commands: "/system identity set name={{ vars.host_var.router_identity }}"
+      when: ansible_network_os == 'community.network.routeros'
+
+    - name: Create Loopback
+      community.network.routeros_command:
+        commands: "/interface bridge add name=loopback"
+      when: ansible_network_os == 'community.network.routeros'
+
+    - name: Get IP Address
+      community.network.routeros_command:
+        commands: "/ip address print"
+      register: ip_address_before
+      when: ansible_network_os == 'community.network.routeros'
+
+    - name: Display IP Address
+      ansible.builtin.debug:
+        var: ip_address_before.stdout_lines
+
+    - name: Set IP Address Loopback
+      community.network.routeros_command:
+        commands: "/ip address add interface=loopback address={{ vars.host_var.address.loopback }}"
+      when: ansible_network_os == 'community.network.routeros'
+
+    - name: Set IP Address Ether1
+      community.network.routeros_command:
+        commands: "/ip address add interface=ether1 address={{ vars.host_var.address.ether1 }}"
+      when: ansible_network_os == 'community.network.routeros'
+
+    - name: Set IP Address Ether2
+      community.network.routeros_command:
+        commands: "/ip address add interface=ether2 address={{ vars.host_var.address.ether2 }}"
+      when: ansible_network_os == 'community.network.routeros'
+
+    - name: Set IP Address Ether3
+      community.network.routeros_command:
+        commands: "/ip address add interface=ether3 address={{ vars.host_var.address.ether3 }}"
+      when: inventory_hostname == 'r3' or inventory_hostname == 'r4'
+
+    - name: Get IP Address
+      community.network.routeros_command:
+        commands: "/ip address print"
+      register: ip_address_after
+      when: ansible_network_os == 'community.network.routeros'
+
+    - name: Display IP Address
+      ansible.builtin.debug:
+        var: ip_address_after.stdout_lines
+
+    - name: Setup OSPF
+      community.network.routeros_command:
+        commands: "/routing ospf instance set default redistribute-connected=as-type-1 redistribute-static=as-type-1 router-id={{ vars.host_var.router_id }}"
+      when: ansible_network_os == 'community.network.routeros'
+
+    - name: Setup OSPF Network Loopback
+      community.network.routeros_command:
+        commands: "/routing ospf network add network={{ vars.host_var.address.loopback }} area=backbone"
+      when: ansible_network_os == 'community.network.routeros'
+
+    - name: Setup OSPF Network Net1
+      community.network.routeros_command:
+        commands: "/routing ospf network add network={{ vars.host_var.address.network1 }} area=backbone"
+      when: ansible_network_os == 'community.network.routeros'
+
+    - name: Setup OSPF Network Net2
+      community.network.routeros_command:
+        commands: "/routing ospf network add network={{ vars.host_var.address.network2 }} area=backbone"
+      when: ansible_network_os == 'community.network.routeros'
+
+    - name: Setup OSPF Network Net3
+      community.network.routeros_command:
+        commands: "/routing ospf network add network={{ vars.host_var.address.network3 }} area=backbone"
+      when: inventory_hostname == 'r3' or inventory_hostname == 'r4'
+
+    - name: Get IP Route
+      community.network.routeros_command:
+        commands: "/ip route print"
+      register: ip_route
+      when: ansible_network_os == 'community.network.routeros'
+
+    - name: Display IP Route
+      ansible.builtin.debug:
+        var: ip_route.stdout_lines
