@@ -1,0 +1,65 @@
+routers:
+  hosts:
+    r1:
+      ansible_host: 10.10.79.2
+      ansible_user: admin
+      ansible_password: "000"
+      host_var:
+        router_identity: R1-079
+        router_id: 10.0.79.1
+      address:
+        loopback: 10.0.79.1/32
+        ether1: 10.1.79.1/30
+        ether2: 10.1.79.13/30
+      network:
+        network1: 10.1.79.0/30
+        network2: 10.1.79.12/30
+    r2:
+      ansible_host: 10.10.79.3
+      ansible_user: admin
+      ansible_password: "000"
+      host_var:
+        router_identity: R2-079
+        router_id: 10.0.79.2
+      address:
+        loopback: 10.0.79.2/32
+        ether1: 10.1.79.2/30
+        ether2: 10.1.79.5/30
+      network:
+        network1: 10.1.79.0/30
+        network2: 10.1.79.4/30
+    r3:
+      ansible_host: 10.10.79.4
+      ansible_user: admin
+      ansible_password: "000"
+      host_var:
+        router_identity: R3-079
+        router_id: 10.0.79.3
+      address:
+        loopback: 10.0.79.3/32
+        ether1: 10.1.79.6/30
+        ether2: 10.1.79.9/30
+        ether3: 172.17.79.1/25
+      network:
+        network1: 10.1.79.4/30
+        network2: 10.1.79.8/30
+        network3: 172.17.79.0/25
+    r4:
+      ansible_host: 10.10.79.5
+      ansible_user: admin
+      ansible_password: "000"
+      host_var:
+        router_identity: R4-079
+        router_id: 10.0.79.4
+      address:
+        loopback: 10.0.79.4/32
+        ether1: 10.1.79.14/30
+        ether2: 10.1.79.10/30
+        ether3: 192.168.79.1/24
+      network:
+        network1: 10.1.79.12/30
+        network2: 10.1.79.8/30
+        network3: 192.168.79.0/24
+vars:
+  ansible_connection: ansible.netcommon.network_cli
+  ansible_network_os: community.network.routeros
